@@ -1,10 +1,10 @@
-# Hyprshot
+# sway-screenshot
 
-[![AUR version](https://img.shields.io/aur/version/hyprshot?label=hyprshot&logo=arch+linux)](https://aur.archlinux.org/packages/hyprshot)
-[![AUR git version](https://img.shields.io/aur/version/hyprshot-git?label=hyprshot-git&logo=arch+linux)](https://aur.archlinux.org/packages/hyprshot-git)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Gustash/hyprshot?color=green&logo=github)](https://github.com/Gustash/hyprshot/releases/latest)
+[![AUR version](https://img.shields.io/aur/version/sway-screenshot?label=sway-screenshot&logo=arch+linux)](https://aur.archlinux.org/packages/sway-screenshot)
+[![AUR git version](https://img.shields.io/aur/version/sway-screenshot-git?label=sway-screenshot-git&logo=arch+linux)](https://aur.archlinux.org/packages/sway-screenshot-git)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Gustash/sway-screenshot?color=green&logo=github)](https://github.com/Gustash/sway-screenshot/releases/latest)
 
-Hyprshot is an utility to easily take screenshot in Hyprland using your mouse.
+sway-screenshot is an utility to easily take screenshot in swaywm using your mouse.
 
 It allows taking screenshots of windows, regions and monitors which are saved to a folder of your choosing and copied to your clipboard.
 
@@ -12,11 +12,11 @@ It allows taking screenshots of windows, regions and monitors which are saved to
 
 ### Arch Linux
 
-You can install the [hyprshot](https://aur.archlinux.org/packages/hyprshot) package in AUR.
+You can install the [sway-screenshot](https://aur.archlinux.org/packages/sway-screenshot) package in AUR.
 
 ### Dependencies
 
-- hyprland      (this one should be obvious)
+- sway          (this one should be obvious)
 - jq            (to parse and manipulate json)
 - grim          (to take the screenshot)
 - slurp         (to select what to screenshot)
@@ -26,51 +26,51 @@ You can install the [hyprshot](https://aur.archlinux.org/packages/hyprshot) pack
 
 ### Manual
 
-To install manually, simply clone this repo and copy/symlink the `hyprshot` script to a folder in your `PATH`:
+To install manually, simply clone this repo and copy/symlink the `sway-screenshot` script to a folder in your `PATH`:
 
 ```bash
-$ git clone https://github.com/Gustash/hyprshot.git Hyprshot
-$ ln -s $(pwd)/Hyprshot/hyprshot $HOME/.local/bin
-$ chmod +x Hyprshot/hyprshot
+$ git clone https://github.com/Gustash/sway-screenshot.git
+$ ln -s $(pwd)/sway-screenshot/sway-screenshot $HOME/.local/bin
+$ chmod +x sway-screenshot/sway-screenshot
 ```
 
 ## Usage
 
-You can get help on how to use hyprshot by executing:
+You can get help on how to use sway-screenshot by executing:
 
 ```bash
-$ hyprshot -h
+$ sway-screenshot -h
 ```
 
-The simplest usage of Hyprshot is executing it with one of the available modes.
+The simplest usage of sway-screenshot is executing it with one of the available modes.
 
 For example, to screenshot an open window:
 
 ```bash
-$ hyprshot -m window
+$ sway-screenshot -m window
 ```
 
 You can also skip saving the screenshot to a file, copying it only to the clipboard:
 
 ```bash
-$ hyprshot -m output --clipboard-only
+$ sway-screenshot -m output --clipboard-only
 ```
 
 ## Configuration
 
-You can add the various modes as keybindings in your Hyprland config like so:
+You can add the various modes as keybindings in your Sway config like so:
 
 ```
-# ~/.config/hypr/hyprland.conf
+# ~/.config/sway/config
 
 ...
 
 # Screenshot a window
-bind = $mainMod, PRINT, exec, hyprshot -m window
+bindsym $mod+Print exec sway-screenshot -m window
 # Screenshot a monitor
-bind = , PRINT, exec, hyprshot -m output
+bindsym Print exec sway-screenshot -m output
 # Screenshot a region
-bind = $shiftMod, PRINT, exec, hyprshot -m region
+bindsym $mod+Shift+Print exec sway-screenshot -m region
 ```
 
 This would allow you to:
@@ -83,6 +83,6 @@ Take a screenshot of a region by using `MOD + Shift + PrintScr`
 
 ## Save location
 
-You can choose which directory Hyprshot will save screenshots in by setting an `HYPRSHOT_DIR` environment variable to your preferred location.
+You can choose which directory sway-screenshot will save screenshots in by setting a `SWAY_SCREENSHOT_DIR` environment variable to your preferred location.
 
-If `HYPRSHOT_DIR` is not set, Hyprshot will attempt to save to `XDG_PICTURES_DIR` and will further fallback to your home directory if this is also not available.
+If `SWAY_SCREENSHOT_DIR` is not set, sway-screenshot will attempt to save to `XDG_PICTURES_DIR` and will further fallback to your home directory if this is also not available.
