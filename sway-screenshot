@@ -17,6 +17,7 @@ Options:
   -m, --mode            one of: output, window, region
   -o, --output-folder   directory in which to save screenshot
   -f, --filename        the file name of the resulting screenshot
+  -t, --timeout         time to wait before taking screenshot
   -d, --debug           print debug information
   -s, --silent          don't send notification when screenshot is saved
   --clipboard-only      copy screenshot to clipboard and don't save image in disk
@@ -48,6 +49,11 @@ function send_notification() {
 
 function save_geometry() {
     Print "Geometry: %s\n" "${1}"
+
+    if [ $TIMEOUT -gt 0 ]; then
+        notify-send "Screenshot" "Taking screenshot in $TIMEOUT seconds"
+        sleep $TIMEOUT
+    fi
 
     if [ $CLIPBOARD -eq 0 ]; then
         mkdir -p "$SAVEDIR"
@@ -101,7 +107,7 @@ function grab_window() {
 }
 
 function args() {
-    local options=$(getopt -o hf:o:m:ds --long help,filename:,output-folder:,mode:,clipboard-only,debug,silent -- "$@")
+    local options=$(getopt -o hf:o:m:ds --long help,filename:,output-folder:,mode:,timeout:,clipboard-only,debug,silent -- "$@")
     eval set -- "$options"
 
     while true; do
@@ -124,6 +130,10 @@ function args() {
                 OPTION=$1;;
             --clipboard-only)
                 CLIPBOARD=1
+                ;;
+            -t | --timeout)
+                shift;
+                TIMEOUT=$1
                 ;;
             -d | --debug)
                 DEBUG=1
@@ -153,6 +163,7 @@ fi
 CLIPBOARD=0
 DEBUG=0
 SILENT=0
+TIMEOUT=0
 FILENAME="$(date +'%Y-%m-%d-%H%M%S_sway-screenshot.png')"
 [ -z "$SWAY_SCREENSHOT_DIR" ] && SAVEDIR=${XDG_PICTURES_DIR:=~} || SAVEDIR=${SWAY_SCREENSHOT_DIR}
 
