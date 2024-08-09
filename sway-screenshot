@@ -55,14 +55,14 @@ function save_geometry() {
         local output="$SAVE_FULLPATH"
         # Trim transparent pixels, in case the window was floating and partially
         # outside the monitor
-        convert $output -trim +repage $output
+        magick $output -trim +repage $output
         wl-copy < "$output"
         send_notification $output
         [ -z "$COMMAND" ] || {
             "$COMMAND" "$output"
         }
     else
-        wl-copy < <(grim -g "${1}" - | convert - -trim +repage -)
+        wl-copy < <(grim -g "${1}" - | magick - -trim +repage -)
     fi
 }
 
