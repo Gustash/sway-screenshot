@@ -55,9 +55,9 @@ function save_geometry() {
         local output="$SAVE_FULLPATH"
         # Trim transparent pixels, in case the window was floating and partially
         # outside the monitor
-        convert $output -trim +repage $output
+        convert "$output" -trim +repage "$output"
         wl-copy < "$output"
-        send_notification $output
+        send_notification "$output"
         [ -z "$COMMAND" ] || {
             "$COMMAND" "$output"
         }
@@ -67,7 +67,7 @@ function save_geometry() {
 }
 
 function begin_grab() {
-    local option=$1
+    local option="$1"
     case $option in
         output)
             local geometry=`grab_output`
@@ -112,16 +112,16 @@ function args() {
                 ;;
             -o | --output-folder)
                 shift;
-                SAVEDIR=$1
+                SAVEDIR="$1"
                 ;;
             -f | --filename)
                 shift;
-                FILENAME=$1
+                FILENAME="$1"
                 ;;
             -m | --mode)
                 shift;
-                echo "${AVAILABLE_MODES[@]}" | grep -wq $1
-                OPTION=$1;;
+                echo "${AVAILABLE_MODES[@]}" | grep -wq "$1"
+                OPTION="$1";;
             --clipboard-only)
                 CLIPBOARD=1
                 ;;
@@ -139,13 +139,13 @@ function args() {
         shift
     done
 
-    if [ -z $OPTION ]; then
+    if [ -z "$OPTION" ]; then
         Print "A mode is required\n\nAvailable modes are:\n\toutput\n\tregion\n\twindow\n"
         exit 2
     fi
 }
 
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
     Help
     exit
 fi
@@ -156,8 +156,8 @@ SILENT=0
 FILENAME="$(date +'%Y-%m-%d-%H%M%S_sway-screenshot.png')"
 [ -z "$SWAY_SCREENSHOT_DIR" ] && SAVEDIR=${XDG_PICTURES_DIR:=~} || SAVEDIR=${SWAY_SCREENSHOT_DIR}
 
-args $0 "$@"
+args "$0" "$@"
 
 SAVE_FULLPATH="$SAVEDIR/$FILENAME"
 [ $CLIPBOARD -eq 0 ] && Print "Saving in: %s\n" "$SAVE_FULLPATH"
-begin_grab $OPTION
+begin_grab "$OPTION"
