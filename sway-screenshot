@@ -47,24 +47,29 @@ function send_notification() {
 }
 
 function save_geometry() {
-    Print "Geometry: %s\n" "${1}"
+    printf "Geometry: %s\n" "${1}"
+    
+    local output=$(mktemp --suffix=.png)
+    grim -g "${1}" "$output"
+
+    # Trim transparent pixels
+    if convert "$output" -format "%[channels]" info: | grep -q "a"; then
+        convert "$output" -trim +repage "$output"
+    fi
 
     if [ $CLIPBOARD -eq 0 ]; then
         mkdir -p "$SAVEDIR"
-        grim -g "${1}" "$SAVE_FULLPATH"
-        local output="$SAVE_FULLPATH"
-        # Trim transparent pixels, in case the window was floating and partially
-        # outside the monitor
-        convert $output -trim +repage $output
-        wl-copy < "$output"
-        send_notification $output
-        [ -z "$COMMAND" ] || {
-            "$COMMAND" "$output"
-        }
-    else
-        wl-copy < <(grim -g "${1}" - | convert - -trim +repage -)
+        print
+        cp $output $SAVE_FULLPATH
+
+        send_notification "$SAVE_FULLPATH"
+        [ -z "$COMMAND" ] || "$COMMAND" "$SAVE_FULLPATH"
     fi
+
+    wl-copy < "$output"
+    rm -f "$output"
 }
+
 
 function begin_grab() {
     local option=$1
