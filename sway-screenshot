@@ -33,8 +33,8 @@ function Print() {
     if [ $DEBUG -eq 0 ]; then
         return 0
     fi
-    
-    1>&2 printf "$@" 
+
+    1>&2 printf "$@"
 }
 
 function send_notification() {
@@ -46,6 +46,14 @@ function send_notification() {
                 -i "${1}"
 }
 
+function Convert() {
+    if convert -version 2>&1 | grep -qE 'ImageMagick [^0-6]'; then
+        magick "$@"
+    else
+        convert "$@"
+    fi
+}
+
 function save_geometry() {
     Print "Geometry: %s\n" "${1}"
 
@@ -55,14 +63,14 @@ function save_geometry() {
         local output="$SAVE_FULLPATH"
         # Trim transparent pixels, in case the window was floating and partially
         # outside the monitor
-        convert $output -trim +repage $output
+        Convert $output -trim +repage $output
         wl-copy < "$output"
         send_notification $output
         [ -z "$COMMAND" ] || {
             "$COMMAND" "$output"
         }
     else
-        wl-copy < <(grim -g "${1}" - | convert - -trim +repage -)
+        wl-copy < <(grim -g "${1}" - | Convert - -trim +repage -)
     fi
 }
 
